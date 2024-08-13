@@ -46,22 +46,6 @@
 #include "FreeImageIO.h"
 #include "PSDParser.h"
 
-#ifdef __is_identifier
-	#if !__is_identifier(_Float16)
-		#define FLOAT16_BUILTIN
-	#endif
-#endif
-
-inline static float float16To32(uint16_t data) {
-#ifndef FLOAT16_BUILTIN
-	//in hardware conversion
-	return *reinterpret_cast<_Float16 *>(&data);
-#else
-	//software conversion
-	return imath_half_to_float(data);
-#endif
-}
-
 // --------------------------------------------------------------------------
 // GeoTIFF profile (see XTIFF.cpp)
 // --------------------------------------------------------------------------
@@ -2219,7 +2203,7 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 							float *dst_pixel = (float*)bits;
 
 							for(tmsize_t x = 0; x < (tmsize_t)(src_line / sizeof(WORD)); x++) {
-								dst_pixel[x] = float16To32(src_pixel[x]);
+								dst_pixel[x] = imath_half_to_float(src_pixel[x]);
 							}
 
 							bits -= dst_pitch;

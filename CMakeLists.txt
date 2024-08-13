@@ -67,11 +67,6 @@ target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xclang -fnative-half-type")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -fnative-half-type")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fnative-half-type")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fnative-half-type")
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    #TODO:
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")

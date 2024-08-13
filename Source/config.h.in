@@ -1,0 +1,50 @@
+#ifndef __FREEIMAGE_CONFIG_H__
+#define __FREEIMAGE_CONFIG_H__
+
+#cmakedefine JPEG_FOUND
+#ifdef JPEG_FOUND
+#define USE_JPEG
+#endif
+
+#if !(defined(_MSC_VER) && (_MSC_VER <= 1310))
+#cmakedefine jxrlib_FOUND
+#ifdef jxrlib_FOUND
+#define USE_JXR
+#endif
+#endif
+
+#cmakedefine OpenJPEG_FOUND
+#ifdef OpenJPEG_FOUND
+#define USE_OpenJPEG
+#endif
+
+#cmakedefine PNG_FOUND
+#ifdef PNG_FOUND
+#define USE_PNG
+#endif
+
+#cmakedefine libraw_FOUND
+#ifdef libraw_FOUND
+#define USE_RawLite
+#endif
+
+#cmakedefine WebP_FOUND
+#ifdef WebP_FOUND
+#define USE_WebP
+#endif
+
+#cmakedefine OpenEXR_FOUND
+#ifdef OpenEXR_FOUND
+#define USE_OpenEXR
+#endif
+
+#cmakedefine TIFF_FOUND
+#ifdef TIFF_FOUND
+#define USE_TIFF
+#endif
+
+#if !defined(USE_OpenEXR) && defined(USE_TIFF)
+#error Tiff requires openexr
+#endif
+
+#endif

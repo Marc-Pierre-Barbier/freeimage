@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.19)
 
 project(freeimage CXX)
 
-set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-
 file(GLOB_RECURSE SRC_LIST Source/**/*.cpp)
 add_library(${PROJECT_NAME} ${SRC_LIST})
 

@@ -56,6 +56,7 @@ if(OpenEXR_FOUND)
     target_link_libraries(${PROJECT_NAME} OpenEXR::OpenEXR)
 endif()
 
+add_definitions(-DFREEIMAGE_LIB)
 
 configure_file(Source/config.h.in config.h)
 
@@ -66,8 +67,13 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xclang -fnative-half-type")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -fnative-half-type")
 endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -ansi")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -ansi")
+endif()
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden")
+endif()
 
 install(TARGETS ${PROJECT_NAME})

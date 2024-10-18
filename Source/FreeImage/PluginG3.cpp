@@ -31,6 +31,11 @@
 #include <fcntl.h>
 #endif
 
+#ifdef WIN32
+#include <fcntl.h>
+#define O_RDONLY _O_RDONLY
+#endif
+
 // ==========================================================
 // Plugin Interface
 // ==========================================================

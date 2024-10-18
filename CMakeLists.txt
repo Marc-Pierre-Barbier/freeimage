@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.5)
 
 project(freeimage CXX)
 
@@ -11,6 +11,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_LIST}")
 
 target_include_directories(${PROJECT_NAME} PRIVATE Source)
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
+
+option(USE_ZUTIL "Use zutil.h for wider os support and zlib version support instead of hardcodded values (this requires exporting zutil.h from zlib)" OFF)
+if(USE_ZUTIL)
+    add_definitions(-DUSE_ZUTIL_H)
+endif()
 
 # you can require/disable them with these variables
 # CMAKE_DISABLE_FIND_PACKAGE_<PackageName>
@@ -56,6 +61,7 @@ if(OpenEXR_FOUND)
     target_link_libraries(${PROJECT_NAME} OpenEXR::OpenEXR)
 endif()
 
+add_definitions(-DFREEIMAGE_LIB)
 
 configure_file(Source/config.h.in config.h)
 
@@ -66,8 +72,15 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xclang -fnative-half-type")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -fnative-half-type")
 endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -ansi")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -ansi")
+endif()
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden")
+endif()
 
 install(TARGETS ${PROJECT_NAME})
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 98)

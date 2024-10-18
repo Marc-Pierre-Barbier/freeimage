@@ -22,7 +22,19 @@
 #include <zlib.h>
 #include "FreeImage.h"
 #include "Utilities.h"
-#include <zutil.h> /* must be the last header because of error C3163 in VS2008 (_vsnprintf defined in stdio.h) */
+
+#ifndef USE_ZUTIL_H
+//only supports windows & unix based system. much simpler to maintain. as we no longer need a modified zlib that ship zutil
+//#include <zutil.h> /* must be the last header because of error C3163 in VS2008 (_vsnprintf defined in stdio.h) */
+#if defined(WIN32) && !defined(__CYGWIN__)
+#  define OS_CODE  10
+#endif
+
+#ifndef OS_CODE
+#  define OS_CODE  3     /* assume Unix */
+#endif
+
+#endif
 
 /**
 Compresses a source buffer into a target buffer, using the ZLib library. 

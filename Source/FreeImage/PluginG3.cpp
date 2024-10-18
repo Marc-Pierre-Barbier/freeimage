@@ -21,11 +21,11 @@
 // ==========================================================
 
 
-#include <tiffiop.h>
 
 #include "FreeImage.h"
 #include "Utilities.h"
 #ifdef USE_TIFF
+#include <tiffiop.h>
 
 #ifdef __unix__
 #include <fcntl.h>

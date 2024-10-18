@@ -36,6 +36,7 @@
 #include "Plugin.h"
 #include "Utilities.h"
 #include "FreeImage.h"
+#include <memory>
 
 namespace {
 

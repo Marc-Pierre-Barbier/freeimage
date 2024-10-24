@@ -21,6 +21,7 @@
 // Use at your own risk!
 // ==========================================================
 
+#include "config.h"
 #ifdef USE_JPEG
 
 extern "C" {
@@ -28,10 +29,10 @@ extern "C" {
 #undef FAR
 #include <setjmp.h>
 
-#include <jinclude.h">
-#include <jpeglib.h">
-#include <jerror.h">
-#include <transupp.h">
+#include <jinclude.h>
+#include <jpeglib.h>
+#include <jerror.h>
+#include <transupp.h>
 }
 
 #include "FreeImage.h"
@@ -180,8 +181,8 @@ JPEGTransformFromHandle(FreeImageIO* src_io, fi_handle src_handle, FreeImageIO* 
 	copyoption = JCOPYOPT_ALL;
 
 	// Set up default JPEG parameters
-	transfoptions.force_grayscale = FALSE;
-	transfoptions.crop = FALSE;
+	transfoptions.force_grayscale = (boolean)FALSE;
+	transfoptions.crop = (boolean)FALSE;
 
 	// Select the transform option
 	switch(operation) {
@@ -224,9 +225,9 @@ JPEGTransformFromHandle(FreeImageIO* src_io, fi_handle src_handle, FreeImageIO* 
 			break;
 	}
 	// (perfect == TRUE) ==> fail if there is non-transformable edge blocks
-	transfoptions.perfect = (perfect == TRUE) ? TRUE : FALSE;
+	transfoptions.perfect = (boolean)((perfect == TRUE) ? TRUE : FALSE);
 	// Drop non-transformable edge blocks: trim off any partial edge MCUs that the transform can't handle.
-	transfoptions.trim = TRUE;
+	transfoptions.trim = (boolean)TRUE;
 
 	try {
 
@@ -249,7 +250,7 @@ JPEGTransformFromHandle(FreeImageIO* src_io, fi_handle src_handle, FreeImageIO* 
 		jcopy_markers_setup(&srcinfo, copyoption);
 
 		// Read the file header
-		jpeg_read_header(&srcinfo, TRUE);
+		jpeg_read_header(&srcinfo, (boolean)TRUE);
 
 		// crop option
 		char crop[64];

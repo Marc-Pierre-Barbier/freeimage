@@ -1,6 +1,11 @@
 #ifndef __FREEIMAGE_CONFIG_H__
 #define __FREEIMAGE_CONFIG_H__
 
+#cmakedefine BUILD_SHARED_LIBS
+#ifdef BUILD_SHARED_LIBS
+#define FREEIMAGE_LIB
+#endif
+
 #cmakedefine JPEG_FOUND
 #ifdef JPEG_FOUND
 #define USE_JPEG

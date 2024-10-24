@@ -1,0 +1,2 @@
+Debug/test.exe
+pause

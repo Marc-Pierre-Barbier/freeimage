@@ -5,6 +5,12 @@ What's New for FreeImage
 ! : changed
 + : added
 
+Oct 23, 2024 - 3.19.0
++ added new basic tests
++ readded the tests (half broken)
+! fixed openexr
+
+
 August 13th, 2024 - 3.19.0
 ! FreeImage no longer ship any dependencies
 - removed all existing build systems
@@ -120,7 +126,7 @@ March 23rd, 2014 - 3.16.0
 + [Herve Drolon] added loading & writing support for the JPEG-XR image format (also support the FIF_LOAD_NOPIXELS flag)
 + [Herve Drolon] added loading & writing support for the WebP image format (also support the FIF_LOAD_NOPIXELS flag)
 + [Herve Drolon] added support for FIF_LOAD_NOPIXELS flag to JP2/J2K plugins
-+ [Ga�l Zimmermann] added basic support for BMP v4, v5 in BMP plugin (useful for drag and drop from another application such as Firefox)
++ [Ga l Zimmermann] added basic support for BMP v4, v5 in BMP plugin (useful for drag and drop from another application such as Firefox)
 + [Mihail Naydenov] FreeImage_GetFIFFromFilename[U] : added support for *rgb,*rgba,*.bw extensions to the SGI plugin
 + [Mihail Naydenov] improved FreeImage_Rescale speed & spatial accuracy
 + [Mihail Naydenov] improved JPEG transform functions and added new functions (see below) :
@@ -712,7 +718,7 @@ May 2, 2004 - 3.3.0
 * [Herve Drolon] fixed a bug with saving of 8-bit palettized images to 24-bit JPEG (channel inversion)
 
 March 16, 2004 - 3.2.1
-! [Volker G�rtner] improved the DDS plugin
+! [Volker G rtner] improved the DDS plugin
 ! [Herve Drolon] FreeImage_Rescale now works on 8-, 24- and 32-bit images
 ! [Herve Drolon] FreeImage_Copy now works on 1-, 4-, 8-, 16-, 24- and 32-bit images
 * [Floris van den Berg] fixed a bug in the MultiPage cache mechanism
@@ -727,7 +733,7 @@ February 18, 2004 - 3.2.0
 + [Herve Drolon] added FreeImage_Composite
 + [Herve Drolon] added ICC profile support to PNG plugin
 + [Herve Drolon] added background color support to PNG plugin
-+ [Volker G�rtner] added support for DDS format (loader)
++ [Volker G rtner] added support for DDS format (loader)
 * [Steve Johnson] improved FreeImage_OpenMultiBitmap/FreeImage_CloseMultiBitmap
 * [Steve Johnson] fixed a bug in FreeImage_InsertPage
 * [Herve Drolon] fixed a bug with JPEG compressed TIFF (red/blue swapping)

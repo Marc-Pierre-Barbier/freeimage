@@ -414,7 +414,8 @@ FIBITMAP * DLL_CALLCONV
 FreeImage_Load(FREE_IMAGE_FORMAT fif, const char *filename, int flags) {
 	FreeImageIO io;
 	SetDefaultIO(&io);
-
+	//only used for openexr as newer version don't allows empty filenames
+	io._fileName = filename;
 	FILE *handle = fopen(filename, "rb");
 
 	if (handle) {

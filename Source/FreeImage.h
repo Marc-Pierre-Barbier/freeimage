@@ -602,6 +602,7 @@ FI_STRUCT(FreeImageIO) {
     FI_WriteProc write_proc;    //! pointer to the function used to write data
     FI_SeekProc  seek_proc;     //! pointer to the function used to seek
     FI_TellProc  tell_proc;     //! pointer to the function used to aquire the current position
+    const char * _fileName;      // DCH for PluginEXR
 };
 
 #if (defined(_WIN32) || defined(__WIN32__))

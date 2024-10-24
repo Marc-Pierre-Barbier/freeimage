@@ -60,7 +60,7 @@ private:
 
 public:
 	C_IStream (FreeImageIO *io, fi_handle handle) :
-	  Imf::IStream(""), _io (io), _handle(handle) {
+	  Imf::IStream(io->_fileName), _io (io), _handle(handle) {
 	}
 
 	virtual bool read (char c[/*n*/], int n) {

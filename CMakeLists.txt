@@ -2,15 +2,14 @@ cmake_minimum_required(VERSION 3.5)
 
 project(freeimage CXX)
 
-file(GLOB_RECURSE SRC_LIST Source/**/*.cpp)
+file(GLOB_RECURSE SRC_LIST Source/*.cpp Source/transupp.c)
 add_library(${PROJECT_NAME} ${SRC_LIST})
 
 file(GLOB_RECURSE HEADER_LIST Source/*.h)
 list(APPEND HEADER_LIST ${CMAKE_BINARY_DIR}/config.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_LIST}")
 
-target_include_directories(${PROJECT_NAME} PRIVATE Source)
-target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_BINARY_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC Source ${PROJECT_BINARY_DIR})
 
 option(USE_ZUTIL "Use zutil.h for wider os support and zlib version support instead of hardcodded values (this requires exporting zutil.h from zlib)" OFF)
 if(USE_ZUTIL)
@@ -33,7 +32,7 @@ endif()
 
 find_package(OpenJPEG)
 if(OpenJPEG_FOUND)
-    target_link_libraries(${PROJECT_NAME} OpenJPEG::OpenJPEG)
+    target_link_libraries(${PROJECT_NAME} openjp2)
 endif()
 
 find_package(PNG)
@@ -47,8 +46,12 @@ if(libraw_FOUND)
 endif()
 
 find_package(TIFF)
-if(TIFF_FOUND)
+#you need a tiff package with tiffio.h
+if(TIFF_FOUND AND TIFFIOP_AVAILABLE)
     target_link_libraries(${PROJECT_NAME} TIFF::TIFF)
+else()
+    message(WARNING "disabling tiff conditions not met")
+    unset(TIFF_FOUND)
 endif()
 
 find_package(WebP)
@@ -61,7 +64,9 @@ if(OpenEXR_FOUND)
     target_link_libraries(${PROJECT_NAME} OpenEXR::OpenEXR)
 endif()
 
-add_definitions(-DFREEIMAGE_LIB)
+if(NOT BUILD_SHARED_LIBS)
+    add_definitions(-DFREEIMAGE_LIB)
+endif()
 
 configure_file(Source/config.h.in config.h)
 
@@ -77,10 +82,23 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden -Wno-ctor-dtor-privacy -ansi")
 endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -O3 -fexceptions -fvisibility=hidden -ansi")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fexceptions -fvisibility=hidden")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  /O2")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
 endif()
 
 install(TARGETS ${PROJECT_NAME})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 98)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+
+if(JPEG_FOUND AND OpenJPEG_FOUND AND PNG_FOUND AND TIFF_FOUND AND OpenEXR_FOUND)
+    #most tests are easy to disable, so adding suport for everything shoud be easy, but i don't want to support what i don't use
+    include(tests/dominique_s_test_suite/CMakeLists.txt)
+    if(WebP_FOUND AND jxrlib_FOUND AND libraw_FOUND)
+        include(tests/original/CMakeLists.txt)
+    else()
+        message(STATUS "Disabling, FreeImage's default test suite due to missing formats (ALL of them are required)")
+    endif()
+else()
+    message(STATUS "Disabling, test suites due to missing formats JPEG:${JPEG_FOUND} - OpenJPEG:${OpenJPEG_FOUND} - PNG:${PNG_FOUND} - TIFF:${TIFF_FOUND} - OpenEXR:${OpenEXR_FOUND}")
+endif()

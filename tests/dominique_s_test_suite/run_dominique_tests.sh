@@ -1,5 +1,7 @@
+#!/bin/sh
 ERROR=0
 function error_handling() {
+    echo "Non 0 return detected"
     ERROR=1
 }
 

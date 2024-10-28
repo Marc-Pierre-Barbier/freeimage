@@ -3,8 +3,28 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <cstring>
 #include <FreeImage.h>
+
+//quick and dirty windows/linux compatiblity
+#ifdef __linux__
+#include <linux/limits.h>
+#define MAX_PATH PATH_MAX
+#define CHAR_TYPE char
+#define CHAR_STRCMP strcmp
+#define Fre_GetFileType FreeImage_GetFileType
+#define Fre_GetFIFFromFilename FreeImage_GetFIFFromFilename
+#define CHAR_OUT cout
+#define STR_MACRO
+#else
+#define CHAR_TYPE wchar_t
+#define CHAR_STRCMP wcscmp
+#define Fre_GetFileType FreeImage_GetFileTypeU
+#define Fre_GetFIFFromFilename FreeImage_GetFIFFromFilenameU
+#define CHAR_OUT wcout
+#define STR_MACRO L
+#include <windef.h>
+#endif
 
 // Read the input image file
 // Get its main values (bpp, witdth, height...)
@@ -13,7 +33,7 @@
 // Open the saved file
 // Get its main values (bpp, witdth, height...)
 // Compare these values to the expected values
-static int ConvertImage(wchar_t* szInputImagePath, wchar_t* szOutputImagePath)
+static int ConvertImage(CHAR_TYPE* szInputImagePath, CHAR_TYPE* szOutputImagePath)
 {
 	int iRet = 0;
 
@@ -23,12 +43,12 @@ static int ConvertImage(wchar_t* szInputImagePath, wchar_t* szOutputImagePath)
 	FIBITMAP* pFIDib = nullptr;
 
 	// Check the file signature and deduce its format
-	fif = FreeImage_GetFileTypeU(szInputImagePath, 0);
+	fif = Fre_GetFileType(szInputImagePath, 0);
 
 	if (fif == FIF_UNKNOWN)
 	{
 		// No signature: try to guess the file format from the file extension
-		fif = FreeImage_GetFIFFromFilenameU(szInputImagePath);
+		fif = Fre_GetFIFFromFilename(szInputImagePath);
 	}
 
 	// Check that the plugin has reading capabilities ...
@@ -41,13 +61,18 @@ static int ConvertImage(wchar_t* szInputImagePath, wchar_t* szOutputImagePath)
 			iFlag = JPEG_QUALITYSUPERB;
 
 		// Filenames conversion
+		#ifdef __unix__
+		char* szInput = szInputImagePath;
+		char* szOutput = szOutputImagePath;
+		#else
 		size_t szNumOfCharConv;
-		char* szInput = new char[_MAX_PATH + 1];
-		memset(szInput, 0, _MAX_PATH + 1);
-		wcstombs_s(&szNumOfCharConv, szInput, _MAX_PATH*sizeof(char), szInputImagePath, _MAX_PATH * sizeof(char));
-		char* szOutput = new char[_MAX_PATH + 1];
-		memset(szOutput, 0, _MAX_PATH + 1);
-		wcstombs_s(&szNumOfCharConv, szOutput, _MAX_PATH * sizeof(char), szOutputImagePath, _MAX_PATH * sizeof(char));
+		char* szInput = new char[MAX_PATH + 1];
+		memset(szInput, 0, MAX_PATH + 1);
+		szNumOfCharConv = wcstombs(szInput, szInputImagePath, MAX_PATH * sizeof(char));
+		char* szOutput = new char[MAX_PATH + 1];
+		memset(szOutput, 0, MAX_PATH + 1);
+		szNumOfCharConv = wcstombs(szOutput, szOutputImagePath, MAX_PATH * sizeof(char));
+		#endif
 
 		// Load the file
 		pFIDib = FreeImage_Load(fif, szInput, iFlag);
@@ -100,25 +125,25 @@ static int ConvertImage(wchar_t* szInputImagePath, wchar_t* szOutputImagePath)
 				}
 				else
 				{
-					std::wcout << L"Error when comparing expected values of " << szOutputImagePath << std::endl;
+					std::CHAR_OUT << STR_MACRO"Error when comparing expected values of " << szOutputImagePath << std::endl;
 					iRet = 1;
 				}
 			}
 			else
 			{
-				std::wcout << L"Error when comparing expected values of " << szInputImagePath << std::endl;
+				std::CHAR_OUT << STR_MACRO"Error when comparing expected values of " << szInputImagePath << std::endl;
 				iRet = 1;
 			}
 		}
 		else
 		{
-			std::wcout << L"Error when opening " << szInputImagePath << std::endl;
+			std::CHAR_OUT << STR_MACRO"Error when opening " << szInputImagePath << std::endl;
 			iRet = 1;
 		}
 	}
 	else
 	{
-		std::wcout << L"Format not supported: " << szInputImagePath << std::endl;
+		std::CHAR_OUT << STR_MACRO"Format not supported: " << szInputImagePath << std::endl;
 		iRet = 1;
 	}
 
@@ -130,10 +155,15 @@ static int ConvertImage(wchar_t* szInputImagePath, wchar_t* szOutputImagePath)
 
 
 // Usage: TestFreeImage -in <input image file> -out <output image file>
+#ifdef __unix__
+int main(int argc, char * argv[])
+{
+#else
 int wmain(int argc, wchar_t* argv[])
 {
-	wchar_t* szInputImagePath	= nullptr;
-	wchar_t* szOutputImagePath	= nullptr;
+#endif
+	CHAR_TYPE* szInputImagePath	= nullptr;
+	CHAR_TYPE* szOutputImagePath = nullptr;
 
 	if (argc == 5)
 	{
@@ -141,7 +171,7 @@ int wmain(int argc, wchar_t* argv[])
 		{
 			if ((*++argv)[0] == '-')
 			{
-				if (!wcscmp(*argv, L"-in"))
+				if (!CHAR_STRCMP(*argv, STR_MACRO"-in"))
 				{
 					// Check if there is something after the option on the command line
 					if (*++argv)
@@ -150,14 +180,14 @@ int wmain(int argc, wchar_t* argv[])
 					}
 					else
 					{
-						std::wcout << L"Error: -in option needs an input image filename parameter." << std::endl;
+						std::CHAR_OUT << STR_MACRO"Error: -in option needs an input image filename parameter." << std::endl;
 						return true;
 					}
 
 					argc--;
 				}
 
-				if (!wcscmp(*argv, L"-out"))
+				if (!CHAR_STRCMP(*argv, STR_MACRO"-out"))
 				{
 					// Check if there is something after the option on the command line
 					if (*++argv)
@@ -166,7 +196,7 @@ int wmain(int argc, wchar_t* argv[])
 					}
 					else
 					{
-						std::wcout << L"Error: -out option needs an output image filename parameter." << std::endl;
+						std::CHAR_OUT << STR_MACRO"Error: -out option needs an output image filename parameter." << std::endl;
 						return true;
 					}
 
@@ -178,16 +208,16 @@ int wmain(int argc, wchar_t* argv[])
 
 	if (szInputImagePath != nullptr && szOutputImagePath != nullptr)
 	{
-		std::wcout << L"Input:  " << szInputImagePath << std::endl;
+		std::CHAR_OUT << STR_MACRO"Input:  " << szInputImagePath << std::endl;
 
 		int ret = ConvertImage(szInputImagePath, szOutputImagePath);
 		if (ret == 0)
-			std::wcout << L"Output: " << szOutputImagePath << std::endl;
+			std::CHAR_OUT << STR_MACRO"Output: " << szOutputImagePath << std::endl;
 		else
-			std::wcout << L"Failed to genrate output" << std::endl;
+			std::CHAR_OUT << STR_MACRO"Failed to genrate output" << std::endl;
 		return ret;
 	}
 	else
-		std::wcout << L"Usage: TestFreeImage -in <Input image filename> -out <Output image filename>" << std::endl;
+		std::CHAR_OUT << STR_MACRO"Usage: TestFreeImage -in <Input image filename> -out <Output image filename>" << std::endl;
 }
 

@@ -1,10 +1,7 @@
 // TestFreeImage.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <FreeImage.h>
+
 
 //quick and dirty windows/linux compatiblity
 #ifdef __linux__
@@ -15,16 +12,46 @@
 #define Fre_GetFileType FreeImage_GetFileType
 #define Fre_GetFIFFromFilename FreeImage_GetFIFFromFilename
 #define CHAR_OUT cout
-#define STR_MACRO
+
+#define ERR_COMP "Error when comparing expected values of "
+#define ERR_OPENING "Error when opening "
+#define ERR_FORMAT "Format not supported: "
+#define STR_IN "-in"
+#define STR_OUT "-out"
+#define STR_USAGE "Usage: TestFreeImage -in <Input image filename> -out <Output image filename>"
+#define STR_OUTPUT_ERR "Failed to genrate output"
+#define STR_OUTPUT "Output: "
+#define STR_INPUT "Input:  "
+#define STR_ERR_INPUT "Error: -in option needs an input image filename parameter."
+#define STR_ERR_OUTPUT "Error: -out option needs an output image filename parameter."
+
 #else
 #define CHAR_TYPE wchar_t
 #define CHAR_STRCMP wcscmp
 #define Fre_GetFileType FreeImage_GetFileTypeU
 #define Fre_GetFIFFromFilename FreeImage_GetFIFFromFilenameU
 #define CHAR_OUT wcout
-#define STR_MACRO L
+
+#define ERR_COMP L"Error when comparing expected values of "
+#define ERR_OPENING L"Error when opening "
+#define ERR_FORMAT L"Format not supported: "
+#define STR_IN L"-in"
+#define STR_OUT L"-out"
+#define STR_USAGE L"Usage: TestFreeImage -in <Input image filename> -out <Output image filename>"
+#define STR_OUTPUT_ERR L"Failed to genrate output"
+#define STR_OUTPUT L"Output: "
+#define STR_INPUT L"Input:  "
+#define STR_ERR_INPUT L"Error: -in option needs an input image filename parameter."
+#define STR_ERR_OUTPUT L"Error: -out option needs an output image filename parameter."
+
+#include <windows.h>
 #include <windef.h>
 #endif
+
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <FreeImage.h>
 
 // Read the input image file
 // Get its main values (bpp, witdth, height...)
@@ -125,25 +152,25 @@ static int ConvertImage(CHAR_TYPE* szInputImagePath, CHAR_TYPE* szOutputImagePat
 				}
 				else
 				{
-					std::CHAR_OUT << STR_MACRO"Error when comparing expected values of " << szOutputImagePath << std::endl;
+					std::CHAR_OUT << ERR_COMP << szOutputImagePath << std::endl;
 					iRet = 1;
 				}
 			}
 			else
 			{
-				std::CHAR_OUT << STR_MACRO"Error when comparing expected values of " << szInputImagePath << std::endl;
+				std::CHAR_OUT << ERR_COMP << szInputImagePath << std::endl;
 				iRet = 1;
 			}
 		}
 		else
 		{
-			std::CHAR_OUT << STR_MACRO"Error when opening " << szInputImagePath << std::endl;
+			std::CHAR_OUT << ERR_OPENING << szInputImagePath << std::endl;
 			iRet = 1;
 		}
 	}
 	else
 	{
-		std::CHAR_OUT << STR_MACRO"Format not supported: " << szInputImagePath << std::endl;
+		std::CHAR_OUT << ERR_FORMAT << szInputImagePath << std::endl;
 		iRet = 1;
 	}
 
@@ -171,7 +198,7 @@ int wmain(int argc, wchar_t* argv[])
 		{
 			if ((*++argv)[0] == '-')
 			{
-				if (!CHAR_STRCMP(*argv, STR_MACRO"-in"))
+				if (!CHAR_STRCMP(*argv, STR_IN))
 				{
 					// Check if there is something after the option on the command line
 					if (*++argv)
@@ -180,14 +207,14 @@ int wmain(int argc, wchar_t* argv[])
 					}
 					else
 					{
-						std::CHAR_OUT << STR_MACRO"Error: -in option needs an input image filename parameter." << std::endl;
+						std::CHAR_OUT << STR_ERR_INPUT << std::endl;
 						return true;
 					}
 
 					argc--;
 				}
 
-				if (!CHAR_STRCMP(*argv, STR_MACRO"-out"))
+				if (!CHAR_STRCMP(*argv, STR_OUT))
 				{
 					// Check if there is something after the option on the command line
 					if (*++argv)
@@ -196,7 +223,7 @@ int wmain(int argc, wchar_t* argv[])
 					}
 					else
 					{
-						std::CHAR_OUT << STR_MACRO"Error: -out option needs an output image filename parameter." << std::endl;
+						std::CHAR_OUT << STR_ERR_OUTPUT << std::endl;
 						return true;
 					}
 
@@ -208,16 +235,16 @@ int wmain(int argc, wchar_t* argv[])
 
 	if (szInputImagePath != nullptr && szOutputImagePath != nullptr)
 	{
-		std::CHAR_OUT << STR_MACRO"Input:  " << szInputImagePath << std::endl;
+		std::CHAR_OUT << STR_INPUT << szInputImagePath << std::endl;
 
 		int ret = ConvertImage(szInputImagePath, szOutputImagePath);
 		if (ret == 0)
-			std::CHAR_OUT << STR_MACRO"Output: " << szOutputImagePath << std::endl;
+			std::CHAR_OUT << STR_OUTPUT << szOutputImagePath << std::endl;
 		else
-			std::CHAR_OUT << STR_MACRO"Failed to genrate output" << std::endl;
+			std::CHAR_OUT << STR_OUTPUT_ERR << std::endl;
 		return ret;
 	}
 	else
-		std::CHAR_OUT << STR_MACRO"Usage: TestFreeImage -in <Input image filename> -out <Output image filename>" << std::endl;
+		std::CHAR_OUT << STR_USAGE << std::endl;
 }
 

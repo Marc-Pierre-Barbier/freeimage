@@ -8,3 +8,4 @@
 *.jp2 -text
 *.jpg -text
 *.tif -text
+*.png -text

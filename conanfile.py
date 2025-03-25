@@ -107,8 +107,7 @@ class FreeImageRecipe(ConanFile):
 		cmake.verbose = True
 		cmake.configure()
 		cmake.build()
-
-		self._test()
+		cmake.test()
 
 	def package(self):
 		cmake = CMake(self)
@@ -116,20 +115,3 @@ class FreeImageRecipe(ConanFile):
 
 	def package_info(self):
 		self.cpp_info.libs = [ "freeimage" ]
-
-	def _test(self):
-		#this is not the recommended usage of test() BUT i have trust issues.
-		if self.options.get_safe("libjpeg", True) and \
-			self.options.get_safe("openjpeg", True) and \
-			self.options.get_safe("png", True) and \
-			self.options.get_safe("tiff", True) and \
-			self.options.get_safe("openexr", True):
-
-			binary_dir = os.path.join(self.build_folder, str(self.settings.build_type))
-
-			separator = ":" if self.settings.os == "Linux" else ";"
-
-			os.environ["PATH"] += separator + binary_dir + separator + self.build_folder
-			cmd = os.path.join(self.build_folder, 'run_dominique_tests.' + "bat" if str(self.settings.os) == "Windows" else "sh")
-			self.run(f'"{cmd}"', cwd=self.build_folder, env="conanrun")
-			self.output.info("Test successful")

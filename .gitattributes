@@ -1,2 +1,10 @@
 * eol=lf
 *.bat text eol=crlf
+
+*.bmp -text
+*.gif -text
+*.exr -text
+*.hdr -text
+*.jp2 -text
+*.jpg -text
+*.tif -text

@@ -38,14 +38,15 @@ class FreeImageRecipe(ConanFile):
 		if self.options.get_safe("libjpeg", True):
 			self.requires("libjpeg/9f", force=True)
 		if self.options.get_safe("openjpeg", True):
-			self.requires("openjpeg/2.5.2")
+			self.requires("openjpeg/2.5.0")
 		if self.options.get_safe("png", True):
-			self.requires("libpng/1.6.43")
+			self.requires("libpng/1.6.44")
 		if self.options.get_safe("tiff", True):
-			self.requires("libtiff/4.6.0")
-			self.requires("imath/3.1.9")
+			#needs tiff's private iop header. just copy the official recipe and export the file
+			self.requires("libtiff-iop/4.7.0")
+			self.requires("imath/3.1.12", force=True)
 		if self.options.get_safe("openexr", True):
-			self.requires("openexr/3.3.1")
+			self.requires("openexr/3.3.2")
 		if self.options.get_safe("webp", False):
 			self.requires("libwebp/1.3.2")
 		if self.options.get_safe("libraw", False):
@@ -96,6 +97,9 @@ class FreeImageRecipe(ConanFile):
 		tc.variables["CMAKE_REQUIRE_FIND_PACKAGE_libraw"] = self.options.get_safe("libraw", True)
 		tc.variables["CMAKE_DISABLE_FIND_PACKAGE_libraw"] = not self.options.get_safe("libraw", True)
 
+		if str(self.settings.os) == "Windows":
+			tc.variables["CMAKE_BUILD_TYPE"] = str(self.settings.build_type)
+
 		tc.generate()
 
 	def build(self):
@@ -104,6 +108,8 @@ class FreeImageRecipe(ConanFile):
 		cmake.configure()
 		cmake.build()
 
+		self._test()
+
 	def package(self):
 		cmake = CMake(self)
 		cmake.install()
@@ -111,7 +117,7 @@ class FreeImageRecipe(ConanFile):
 	def package_info(self):
 		self.cpp_info.libs = [ "freeimage" ]
 
-	def test(self):
+	def _test(self):
 		#this is not the recommended usage of test() BUT i have trust issues.
 		if self.options.get_safe("libjpeg", True) and \
 			self.options.get_safe("openjpeg", True) and \
@@ -119,7 +125,11 @@ class FreeImageRecipe(ConanFile):
 			self.options.get_safe("tiff", True) and \
 			self.options.get_safe("openexr", True):
 
-			cmd = os.path.join(self.build_folder, 'run_dominique_tests.' + "bat" if str(self.settings.os) == "Windows" else "sh")
+			binary_dir = os.path.join(self.build_folder, str(self.settings.build_type))
 
+			separator = ":" if self.settings.os == "Linux" else ";"
+
+			os.environ["PATH"] += separator + binary_dir + separator + self.build_folder
+			cmd = os.path.join(self.build_folder, 'run_dominique_tests.' + "bat" if str(self.settings.os) == "Windows" else "sh")
 			self.run(f'"{cmd}"', cwd=self.build_folder, env="conanrun")
 			self.output.info("Test successful")

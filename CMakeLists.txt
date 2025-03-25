@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 
 project(freeimage CXX)
 
@@ -92,6 +92,7 @@ install(TARGETS ${PROJECT_NAME})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 if(JPEG_FOUND AND OpenJPEG_FOUND AND PNG_FOUND AND TIFF_FOUND AND OpenEXR_FOUND)
+    enable_testing()
     #most tests are easy to disable, so adding suport for everything shoud be easy, but i don't want to support what i don't use
     include(tests/dominique_s_test_suite/CMakeLists.txt)
     if(WebP_FOUND AND jxrlib_FOUND AND libraw_FOUND)

@@ -32,6 +32,7 @@ class FreeImageRecipe(ConanFile):
 	exports_sources = "*"
 
 	def build_requirements(self):
+		self.tool_requires("ninja/[>1.10.0]")
 		self.tool_requires("cmake/[>3.5.0]")
 
 	def requirements(self):
@@ -62,7 +63,7 @@ class FreeImageRecipe(ConanFile):
 	def generate(self):
 		deps = CMakeDeps(self)
 		deps.generate()
-		tc = CMakeToolchain(self)
+		tc = CMakeToolchain(self, generator="Ninja")
 		tc.variables["CMAKE_VERBOSE_MAKEFILE"] = True
 
 		tc.variables["CMAKE_REQUIRE_FIND_PACKAGE_JPEG"] = self.options.get_safe("libjpeg", True)

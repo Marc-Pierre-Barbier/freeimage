@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(freeimage CXX)
+project(freeimage C CXX)
 
 file(GLOB_RECURSE SRC_LIST Source/*.cpp Source/transupp.c)
 add_library(${PROJECT_NAME} ${SRC_LIST})
@@ -93,13 +93,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 if(JPEG_FOUND AND OpenJPEG_FOUND AND PNG_FOUND AND TIFF_FOUND AND OpenEXR_FOUND)
     enable_testing()
-    #most tests are easy to disable, so adding suport for everything shoud be easy, but i don't want to support what i don't use
-    include(tests/dominique_s_test_suite/CMakeLists.txt)
-    if(WebP_FOUND AND jxrlib_FOUND AND libraw_FOUND)
-        include(tests/original/CMakeLists.txt)
-    else()
-        message(STATUS "Disabling, FreeImage's default test suite due to missing formats (ALL of them are required)")
-    endif()
+    add_subdirectory(tests)
 else()
     message(STATUS "Disabling, test suites due to missing formats JPEG:${JPEG_FOUND} - OpenJPEG:${OpenJPEG_FOUND} - PNG:${PNG_FOUND} - TIFF:${TIFF_FOUND} - OpenEXR:${OpenEXR_FOUND}")
 endif()

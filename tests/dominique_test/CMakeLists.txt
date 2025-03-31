@@ -1,0 +1,18 @@
+project(dominic_test)
+
+add_executable(${PROJECT_NAME} main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE freeimage)
+
+add_test(NAME "Test_bmp" COMMAND "dominic_test" -in "${test_assets}/test01.bmp" -out "test01.bmp")
+add_test(NAME "Test_bmp2" COMMAND "dominic_test" -in "${test_assets}/test02.bmp" -out "test02.bmp")
+add_test(NAME "Test_bmp3" COMMAND "dominic_test" -in "${test_assets}/test03.bmp" -out "test03.bmp")
+add_test(NAME "Test_bmp4" COMMAND "dominic_test" -in "${test_assets}/test04.bmp" -out "test04.bmp")
+add_test(NAME "Test_gif" COMMAND "dominic_test" -in "${test_assets}/test01.gif" -out "test01.gif")
+add_test(NAME "Test_jpg" COMMAND "dominic_test" -in "${test_assets}/test01.jpg" -out "test01.jpg")
+add_test(NAME "Test_jpg2" COMMAND "dominic_test" -in "${test_assets}/test02.jpg" -out "test02.jpg")
+add_test(NAME "Test_png" COMMAND "dominic_test" -in "${test_assets}/test01.png" -out "test01.png")
+add_test(NAME "Test_tiff" COMMAND "dominic_test" -in "${test_assets}/test01.tif" -out "test01.tif")
+add_test(NAME "Test_tiff2" COMMAND "dominic_test" -in "${test_assets}/test02.tif" -out "test02.tif")
+add_test(NAME "Test_jp2" COMMAND "dominic_test" -in "${test_assets}/test01.jp2" -out "test01.jp2")
+add_test(NAME "Test_exr" COMMAND "dominic_test" -in "${test_assets}/test01.exr" -out "test01.exr")
+add_test(NAME "Test_hdr" COMMAND "dominic_test" -in "${test_assets}/test01.hdr" -out "test01.hdr")

@@ -2,3 +2,5 @@ build
 CMakeUserPresets.json
 Source/transupp.c
 Source/jinclude.h
+.venv
+.vscode

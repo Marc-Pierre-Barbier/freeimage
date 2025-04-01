@@ -1,6 +1,8 @@
+
 #include <iostream>
 #include <exception>
 #include <string>
+#include <filesystem>
 
 #include <FreeImage.h>
 
@@ -16,11 +18,23 @@ void check(bool condition, const char* message, const char* file = __FILE__, int
     }
 }
 
+
+std::wstring os2ws(std::string str)
+{
+    const size_t cSize = str.size() + 1;
+    wchar_t* wc = new wchar_t[cSize];
+    mbstowcs(wc, str.c_str(), cSize);
+    std::wstring out = wc;
+    delete wc;
+    return out;
+}
+
 int main(int argc, char* argv[])
 {
-    // Asset folder as unique argument
-    check(argc >= 2, "Asset directory must be provided");
-    std::string asset_dir = argv[1];
+    std::string asset_dir = "C:/ANSYSDev/freeimage/tests/assets";
+    // Asset folder as unique argument;
+    if (argc >= 2)
+        asset_dir = argv[1];
 
     FreeImage_Initialise();
     FreeImage_SetOutputMessage([](FREE_IMAGE_FORMAT fif, const char* message) {
@@ -56,7 +70,21 @@ int main(int argc, char* argv[])
     std::string outfile = "output.jpeg";
     int iReturn = FreeImage_Save(FIF_JPEG, hBitmap, outfile.c_str());
     CHECK(iReturn != 0);
+    FreeImage_Unload(hBitmap);
 
+    // LoadU
+    std::wstring infile2 = os2ws(asset_dir + "/import.png");	
+    fif = FreeImage_GetFIFFromFilenameU(infile2.c_str());
+    CHECK(fif == FIF_PNG);
+    hBitmap = FreeImage_LoadU(FIF_PNG, infile2.c_str());
+    CHECK(hBitmap != nullptr);
+    FreeImage_Unload(hBitmap);
+
+    infile2 = os2ws(asset_dir + "/test01.exr");	
+    fif = FreeImage_GetFIFFromFilenameU(infile2.c_str());
+    CHECK(fif == FIF_EXR);
+    hBitmap = FreeImage_LoadU(FIF_EXR, infile2.c_str());
+    CHECK(hBitmap != nullptr);
     FreeImage_Unload(hBitmap);
 
     FreeImage_DeInitialise();

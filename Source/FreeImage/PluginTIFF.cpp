@@ -2196,14 +2196,17 @@ Load(FreeImageIO *io, fi_handle handle, int page, int flags, void *data) {
 						}
 
 						// convert from half (16-bit) to float (32-bit)
-						// replacement of openxr's helper class
+						// !!! use OpenEXR half helper class
+
+						half half_value;
 
 						for (uint32_t l = 0; l < nrow; l++) {
 							WORD *src_pixel = (WORD*)(buf + l * src_line);
 							float *dst_pixel = (float*)bits;
 
 							for(tmsize_t x = 0; x < (tmsize_t)(src_line / sizeof(WORD)); x++) {
-								dst_pixel[x] = imath_half_to_float(src_pixel[x]);
+								half_value.setBits(src_pixel[x]);
+								dst_pixel[x] = half_value;
 							}
 
 							bits -= dst_pitch;

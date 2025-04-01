@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME} ${SRC_LIST})
 file(GLOB_RECURSE HEADER_LIST Source/*.h)
 list(APPEND HEADER_LIST ${CMAKE_BINARY_DIR}/config.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_LIST}")
+set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 target_include_directories(${PROJECT_NAME} PUBLIC Source ${PROJECT_BINARY_DIR})
 

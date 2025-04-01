@@ -1,8 +1,6 @@
 
 #include <iostream>
-#include <exception>
 #include <string>
-#include <filesystem>
 
 #include <FreeImage.h>
 
@@ -60,7 +58,7 @@ int main(int argc, char* argv[])
     FreeImage_Unload(hBitmap);
 
     // Load
-    std::string infile = asset_dir + "/import.png";	
+    std::string infile = asset_dir + "/import.png";
     auto fif = FreeImage_GetFIFFromFilename(infile.c_str());
     CHECK(fif == FIF_PNG);
     hBitmap = FreeImage_Load(FIF_PNG, infile.c_str());
@@ -72,20 +70,37 @@ int main(int argc, char* argv[])
     CHECK(iReturn != 0);
     FreeImage_Unload(hBitmap);
 
-    // LoadU
-    std::wstring infile2 = os2ws(asset_dir + "/import.png");	
+    // wstring are for windows only.
+    #ifdef __unix__
+    std::string infile2(asset_dir + "/import.png");
+    fif = FreeImage_GetFIFFromFilename(infile2.c_str());
+    CHECK(fif == FIF_PNG);
+    hBitmap = FreeImage_Load(FIF_PNG, infile2.c_str());
+    CHECK(hBitmap != nullptr);
+    FreeImage_Unload(hBitmap);
+
+    infile2 = (asset_dir + "/test01.exr");
+    fif = FreeImage_GetFIFFromFilename(infile2.c_str());
+    CHECK(fif == FIF_EXR);
+    hBitmap = FreeImage_Load(FIF_EXR, infile2.c_str());
+    CHECK(hBitmap != nullptr);
+    FreeImage_Unload(hBitmap);
+
+    #else
+    std::wstring infile2 = os2ws(asset_dir + "/import.png");
     fif = FreeImage_GetFIFFromFilenameU(infile2.c_str());
     CHECK(fif == FIF_PNG);
     hBitmap = FreeImage_LoadU(FIF_PNG, infile2.c_str());
     CHECK(hBitmap != nullptr);
     FreeImage_Unload(hBitmap);
 
-    infile2 = os2ws(asset_dir + "/test01.exr");	
+    infile2 = os2ws(asset_dir + "/test01.exr");
     fif = FreeImage_GetFIFFromFilenameU(infile2.c_str());
     CHECK(fif == FIF_EXR);
     hBitmap = FreeImage_LoadU(FIF_EXR, infile2.c_str());
     CHECK(hBitmap != nullptr);
     FreeImage_Unload(hBitmap);
+    #endif
 
     FreeImage_DeInitialise();
-} 
+}

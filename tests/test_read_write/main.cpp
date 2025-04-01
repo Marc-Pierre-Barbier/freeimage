@@ -31,7 +31,7 @@ std::wstring os2ws(std::string str)
 
 int main(int argc, char* argv[])
 {
-    std::string asset_dir = "C:/ANSYSDev/freeimage/tests/assets";
+    std::string asset_dir = "";
     // Asset folder as unique argument;
     if (argc >= 2)
         asset_dir = argv[1];

@@ -60,18 +60,18 @@ private:
 
 public:
 	C_IStream (FreeImageIO *io, fi_handle handle) :
-	  Imf::IStream(io->_fileName), _io (io), _handle(handle) {
+	  Imf::IStream(""), _io (io), _handle(handle) {
 	}
 
 	virtual bool read (char c[/*n*/], int n) {
 		return ((unsigned)n != _io->read_proc(c, 1, n, _handle));
 	}
 
-	virtual uint64_t  tellg() {
+	virtual uint64_t tellg() {
 		return _io->tell_proc(_handle);
 	}
 
-	virtual void seekg(uint64_t  pos) {
+	virtual void seekg(uint64_t pos) {
 		_io->seek_proc(_handle, (unsigned)pos, SEEK_SET);
 	}
 
@@ -101,11 +101,11 @@ public:
 		}
 	}
 
-	virtual uint64_t  tellp() {
+	virtual uint64_t tellp() {
 		return _io->tell_proc(_handle);
 	}
 
-	virtual void seekp(uint64_t  pos) {
+	virtual void seekp(uint64_t pos) {
 		_io->seek_proc(_handle, (unsigned)pos, SEEK_SET);
 	}
 };

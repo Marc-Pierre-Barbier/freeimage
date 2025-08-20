@@ -368,7 +368,7 @@ term_source (j_decompress_ptr cinfo) {
 	The caller must have already opened the stream, and is responsible
 	for closing it after finishing decompression.
 */
-GLOBAL(void)
+DLL_API
 jpeg_freeimage_src (j_decompress_ptr cinfo, fi_handle infile, FreeImageIO *io) {
 	freeimage_src_ptr src;
 
@@ -403,7 +403,7 @@ jpeg_freeimage_src (j_decompress_ptr cinfo, fi_handle infile, FreeImageIO *io) {
 	The caller must have already opened the stream, and is responsible
 	for closing it after finishing compression.
 */
-GLOBAL(void)
+DLL_API
 jpeg_freeimage_dst (j_compress_ptr cinfo, fi_handle outfile, FreeImageIO *io) {
 	freeimage_dst_ptr dest;
 

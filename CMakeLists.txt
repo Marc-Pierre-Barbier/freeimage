@@ -21,32 +21,32 @@ endif()
 # CMAKE_DISABLE_FIND_PACKAGE_<PackageName>
 # CMAKE_REQUIRE_FIND_PACKAGE_<PackageName>
 
-find_package(JPEG)
+find_package(JPEG CONFIG)
 if(JPEG_FOUND)
     target_link_libraries(${PROJECT_NAME} JPEG::JPEG)
 endif()
 
-find_package(jxrlib)
+find_package(jxrlib CONFIG)
 if(jxrlib_FOUND)
     target_link_libraries(${PROJECT_NAME} jxrlib::jxrlib)
 endif()
 
-find_package(OpenJPEG)
+find_package(OpenJPEG CONFIG)
 if(OpenJPEG_FOUND)
     target_link_libraries(${PROJECT_NAME} openjp2)
 endif()
 
-find_package(PNG)
+find_package(PNG CONFIG)
 if(PNG_FOUND)
     target_link_libraries(${PROJECT_NAME} PNG::PNG)
 endif()
 
-find_package(libraw)
+find_package(libraw CONFIG)
 if(libraw_FOUND)
     target_link_libraries(${PROJECT_NAME} libraw::libraw)
 endif()
 
-find_package(TIFF)
+find_package(TIFF CONFIG)
 #you need a tiff package with tiffio.h
 if(TIFF_FOUND AND TIFFIOP_AVAILABLE)
     target_link_libraries(${PROJECT_NAME} TIFF::TIFF)
@@ -55,12 +55,12 @@ else()
     unset(TIFF_FOUND)
 endif()
 
-find_package(WebP)
+find_package(WebP CONFIG)
 if(WebP_FOUND)
     target_link_libraries(${PROJECT_NAME} WebP::webp)
 endif()
 
-find_package(OpenEXR)
+find_package(OpenEXR CONFIG)
 if(OpenEXR_FOUND)
     target_link_libraries(${PROJECT_NAME} OpenEXR::OpenEXR)
 endif()
